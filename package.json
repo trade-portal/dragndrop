@@ -1,0 +1,15 @@
+{
+  "name": "dragndrop",
+  "version": "1.0.0",
+  "description": "Drag 'n' drop builder written with StimulusJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "es-module-shims": "^2.0.10"
+  }
+}
