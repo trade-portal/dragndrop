@@ -8,8 +8,78 @@ export default class GlobalRenderer {
   }
 
   render(templateData) {
-    var result = monkeys(templateData)
+    var result = this.monkeys(templateData)
     return result
+  }
+
+  generateElement(item) {
+  
+    var elem = document.createElement(item.shift());
+    
+    if (isObject(item[0])) {
+      var attrs = item.shift();
+      var attrName;
+      var attrValue;
+    
+      // attr="value"
+      for (attrName in attrs) {
+        attrValue = attrs[attrName];
+    
+        if (typeof attrValue === 'string' ||
+           (typeof attrValue === 'number' && isFinite(attrValue))) {
+    
+          elem.setAttribute(attrName, attrValue);
+        }
+      }
+    }
+  
+    return elem
+  
+  }
+  
+  /**
+   * This is a recursive function...
+   * Initially the template argument is blank,
+   * but with subsequent nested calls, it is passed
+   * what the fragment that is currently being worked on.
+   *
+   */
+  monkeys(template, target) {
+    target = target || document.createDocumentFragment();
+  
+    if (isNotArray(template)) {
+  
+      this.monkeys(item, target);
+  
+    } else {
+
+      template.forEach((function(item) {
+        this.parseNode(item, target)
+      }).bind(this))
+  
+    }
+    return target
+  }
+
+  parseNode(item, target) {
+    if (isTextNode(item)) {
+
+      target.appendChild(document.createTextNode(item))
+
+    } else if (isFalse(item)) {
+      return undefined
+
+    } else if (isElement(item)) {
+      var elem = this.generateElement(item)
+      target.appendChild(this.monkeys(item, elem))
+      return
+
+    } else if (isNode(item)) {
+      target.appendChild(item);
+      return
+      
+    }
+
   }
 }
 
@@ -71,70 +141,4 @@ function isNode(item) {
 
 }
 
-function generateElement(item) {
-
-  var elem = document.createElement(item.shift());
-  
-  if (isObject(item[0])) {
-    var attrs = item.shift();
-    var attrName;
-    var attrValue;
-  
-    // attr="value"
-    for (attrName in attrs) {
-      attrValue = attrs[attrName];
-  
-      if (typeof attrValue === 'string' ||
-         (typeof attrValue === 'number' && isFinite(attrValue))) {
-  
-        elem.setAttribute(attrName, attrValue);
-      }
-    }
-  }
-
-  return elem
-
-}
-
-/**
- * This is a recursive function...
- * Initially the template argument is blank,
- * but with subsequent nested calls, it is passed
- * what the fragment that is currently being worked on.
- *
- */
-var monkeys = function(template, target) {
-  target = target || document.createDocumentFragment();
-
-  if (isNotArray(template)) {
-
-    monkeys(item, target);
-
-  } else {
-
-    template.forEach(function(item) {
-      console.log(item) 
-      if (isTextNode(item)) {
-
-        target.appendChild(document.createTextNode(item))
-
-      } else if (isFalse(item)) {
-        return undefined
-
-      } else if (isElement(item)) {
-        var elem = generateElement(item)
-        target.appendChild(monkeys(item, elem))
-        return
-
-      } else if (isNode(item)) {
-        target.appendChild(item);
-        return
-        
-      }
-
-    })
-
-  }
-  return target
-}
 
