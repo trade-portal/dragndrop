@@ -8,11 +8,19 @@ export default class PluginDirectory {
     this.plugins.set(plugin.name, plugin.interface)
   }
 
+  getPlugin(name, props) {
+    const plugin = this.plugins.get(name)
+    return plugin(props)
+  }
+
   get defaultPlugins() {
     return [
       {
-        "name": "",
-        "interface": ""
+        "name": "header",
+        "interface": function(props) {
+          console.log(props)
+          return props
+        }
       }
     ]
   }

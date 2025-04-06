@@ -1,3 +1,7 @@
+/**
+ * The idea of the templates, is that you provide a function
+ * that returns a renderable array
+ */
 export default class TemplateDirectory {
   constructor() {
     this.templates = new Map()
@@ -8,20 +12,28 @@ export default class TemplateDirectory {
     this.templates.set(template.name, template.data)
   }
 
-  getTemplate(name) {
+  getTemplate(name, props) {
     const template = this.templates.get(name)
-    return template
+    return template(props)
   }
 
   get defaultTemplates() {
     return [
       {
         "name": "slot",
-        "data": ['div', 'eyip']
+        "data": (props) => {
+          return ['div', {
+            'data-controller': 'slot',
+            'data-slot-plugin-value': props['plugin'],
+            'data-slot-settings-value': JSON.stringify(props['settings'])
+          }]
+        }
       },
       {
         "name": "gap",
-        "data": ['div', 'skfjsdjf']
+        "data": (props) => {
+          return ['div', 'skfjsdjf']
+        }
       },
     ]
   }

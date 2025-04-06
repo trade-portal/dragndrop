@@ -34,8 +34,8 @@ export default class Dragndrop extends Controller {
   }
 
   renderSchema() {
-    var slots = this.schema.root.slots.map(() => {
-      return window.templateDirectory.getTemplate("slot")
+    var slots = this.schema.root.slots.map((slot) => {
+      return window.templateDirectory.getTemplate("slot", slot["props"])
     })
     this.element.innerHTML = ""
     const renderedSlots = window.globalRenderer.render(slots)
@@ -50,9 +50,22 @@ export default class Dragndrop extends Controller {
         "slots": [
           {
             "id": "Page Header",
-            "plugin": "header",
             "position": 1,
-            "options": {
+            "props": {
+              "plugin": "header",
+              "settings": {
+                "text": "This is a header",
+                "canExportData": true
+              },
+            },
+          },
+          {
+            "id": "Page Header",
+            "props": {
+              "plugin": "header",
+            },
+            "position": 1,
+            "settings": {
               "text": "This is a header",
               "canExportData": true
             },
