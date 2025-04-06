@@ -2,8 +2,9 @@ import { Application } from "@hotwired/stimulus"
 
 const application = Application.start()
 
-import Dragndrop from 'dragndrop'
+import { Dragndrop, Slot } from 'dragndrop'
 application.register('dragndrop', Dragndrop)
+application.register('slot', Slot)
 
 // Configure Stimulus development experience
 application.debug = true

@@ -1,0 +1,140 @@
+// -----------------
+// Big thanks go to https://github.com/deepsweet/microjungle
+// -----------------
+
+export default class GlobalRenderer {
+  initialize() {
+    this.templateDirectory = window.templateDirectory
+  }
+
+  render(templateData) {
+    var result = monkeys(templateData)
+    return result
+  }
+}
+
+function objectToString(object) {
+  return Object.prototype.toString.call(object)
+}
+
+function isArray(object) {
+  if (objectToString(object) === '[object Array]') {
+    return true
+  } else  {
+    return false
+  }
+}
+function isNotArray(object) {
+  !isArray(object)
+}
+function isObject(object) {
+  if (objectToString(object) === '[object Object]') {
+    return true
+  } else  {
+    return false
+  }
+}
+function isNotObject(object) {
+  !isObject(object)
+}
+
+function isTextNode(item) {
+  if (typeof item === 'string' ||
+     (typeof item === 'number' && isFinite(item))) {
+
+    return true
+  } else {
+    return false
+  }
+}
+function isFalse(item) {
+  if (!item) {
+    true
+  } else {
+    false
+  }
+}
+function isElement(item) {
+  if (typeof item[0] === 'string') {
+    return true
+  } else {
+    return false
+  }
+}
+
+function isNode(item) {
+  if (item.nodeType) {
+    return true
+  } else {
+    return false
+  }
+
+}
+
+function generateElement(item) {
+
+  var elem = document.createElement(item.shift());
+  
+  if (isObject(item[0])) {
+    var attrs = item.shift();
+    var attrName;
+    var attrValue;
+  
+    // attr="value"
+    for (attrName in attrs) {
+      attrValue = attrs[attrName];
+  
+      if (typeof attrValue === 'string' ||
+         (typeof attrValue === 'number' && isFinite(attrValue))) {
+  
+        elem.setAttribute(attrName, attrValue);
+      }
+    }
+  }
+
+  return elem
+
+}
+
+/**
+ * This is a recursive function...
+ * Initially the template argument is blank,
+ * but with subsequent nested calls, it is passed
+ * what the fragment that is currently being worked on.
+ *
+ */
+var monkeys = function(template, target) {
+  target = target || document.createDocumentFragment();
+
+  if (isNotArray(template)) {
+
+    monkeys(item, target);
+
+  } else {
+
+    template.forEach(function(item) {
+      console.log(item) 
+      if (isTextNode(item)) {
+
+        target.appendChild(document.createTextNode(item))
+
+      } else if (isFalse(item)) {
+        return undefined
+
+      } else if (isElement(item)) {
+        var elem = generateElement(item)
+        target.appendChild(monkeys(item, elem))
+        return
+
+      } else if (isNode(item)) {
+        target.appendChild(item);
+        return
+        
+      }
+
+    })
+
+  }
+  return target
+}
+

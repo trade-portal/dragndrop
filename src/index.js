@@ -1,6 +1,4 @@
-import { Controller } from "@hotwired/stimulus"
+import Dragndrop from './dragndrop.js'
+import Slot from './slot.js'
 
-export default class extends Controller {
-  connect() {
-  }
-}
+export { Dragndrop, Slot }
